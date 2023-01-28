@@ -15,7 +15,7 @@
 void interpret(StmtArray *array, HashTable *env);
 void execute(Stmt *stmt, HashTable *env);
 void visitPuts(Stmt *stmt, HashTable *env);
-void visitVarAssignment(Stmt *stmt, HashTable *env);
+Object *visitVarAssignment(Expr *exp, HashTable *env);
 Object *evaluate(Expr *exp, HashTable *env);
 Object *visitStringLiteral(Expr *exp);
 Object *visitNumberLiteral(Expr *exp);

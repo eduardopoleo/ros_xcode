@@ -23,9 +23,6 @@ void execute(Stmt *stmt, HashTable *env) {
         case PUTS_STMT:
             visitPuts(stmt, env);
             break;
-        case VAR_ASSIGNMENT_STMT:
-            visitVarAssignment(stmt, env);
-            break;
         case EXPR_STMT:
             evaluate(stmt->exprStmt, env);
             break;
@@ -54,9 +51,10 @@ void visitPuts(Stmt *stmt, HashTable *env) {
     }
 }
 
-void visitVarAssignment(Stmt *stmt, HashTable *env) {
-    Object *object = evaluate(stmt->exprStmt, env);
-    insertEntry(env, stmt->as.varAssignment.identifier, stmt->as.varAssignment.length, object);
+Object *visitVarAssignment(Expr *exp, HashTable *env) {
+    Object *object = evaluate(exp->as.varAssignment.value, env);
+    insertEntry(env, exp->as.varAssignment.name, exp->as.varAssignment.length, object);
+    return object;
 }
 
 Object *evaluate(Expr *exp, HashTable *env) {
@@ -69,6 +67,8 @@ Object *evaluate(Expr *exp, HashTable *env) {
             return visitStringLiteral(exp);
         case VAR_EXP:
             return visitVarExpression(exp, env);
+        case VAR_ASSIGNMENT:
+            return visitVarAssignment(exp, env);
   }
 }
 

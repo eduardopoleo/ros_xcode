@@ -95,7 +95,7 @@ Object *getEntry(char *key, int keyLength, HashTable *table) {
     HashTableEntry *current = table->bins[bucketIndex];
 
     if (current == NULL) {
-        printf("Value not found in hash table");
+        printf("Value not found in hash table\n");
         exit(1);
     }
 
@@ -104,7 +104,7 @@ Object *getEntry(char *key, int keyLength, HashTable *table) {
         current = current->next;
         
         if (current == NULL) {
-            printf("Value not found in hash table");
+            printf("Value not found in hash table\n");
             exit(1);
         }
     }
