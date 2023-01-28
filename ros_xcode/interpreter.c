@@ -123,6 +123,14 @@ Object *visitBinary(Expr *exp, HashTable *env) {
             object->type = BOOLEAN_OBJ;
             object->as.boolean.value = evaluate(exp->as.binary.left, env)->as.number.value <= evaluate(exp->as.binary.right, env)->as.number.value;
             break;
+        case EQUAL_EQUAL:
+            object->type = BOOLEAN_OBJ;
+            object->as.boolean.value = evaluate(exp->as.binary.left, env)->as.number.value == evaluate(exp->as.binary.right, env)->as.number.value;
+            break;
+        case BANG_EQUAL:
+            object->type = BOOLEAN_OBJ;
+            object->as.boolean.value = evaluate(exp->as.binary.left, env)->as.number.value != evaluate(exp->as.binary.right, env)->as.number.value;
+            break;
     }
     return object;
 }

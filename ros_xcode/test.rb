@@ -1,4 +1,4 @@
 a = 5
-b = 4
+b = 5
 c = 6
-puts a <= b * c
+puts a == b * c

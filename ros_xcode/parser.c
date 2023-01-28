@@ -47,7 +47,18 @@ Stmt *statement(Scanner *scanner) {
 }
 
 Expr *expression(Scanner *scanner) {
-  return comparison(scanner);
+  return equality(scanner);
+}
+
+Expr *equality(Scanner *scanner) {
+  Expr *exp = comparison(scanner);
+  while(match(scanner, EQUAL_EQUAL) ||
+        match(scanner, BANG_EQUAL))
+  {
+      TokenType op = scanner->peek_prev.type;
+      exp = newBinary(exp, comparison(scanner), op, scanner->line);
+  }
+  return exp;
 }
 
 // comparison -> term((> | < | >= | <=) term)*
@@ -58,11 +69,8 @@ Expr *comparison(Scanner *scanner) {
         match(scanner, LESS) ||
         match(scanner, LESS_EQUAL))
   {
-      
       TokenType op = scanner->peek_prev.type;
-      Expr *expr = term(scanner);
-
-      exp = newBinary(exp, expr, op, scanner->line);
+      exp = newBinary(exp, term(scanner), op, scanner->line);
   }
   return exp;
 }

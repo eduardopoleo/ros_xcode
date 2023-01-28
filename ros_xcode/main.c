@@ -33,7 +33,7 @@
   - [x] puts
   - [x] variables
   - boolean related binary operation
-    - ">" "<" ">=" "<=" "=="
+    - ">" "<" ">=" "<=" "==" "!="
   - control flow (if, for, while)
   - functions
   - closures (blocks)
