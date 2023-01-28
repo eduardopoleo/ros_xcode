@@ -8,6 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		A099312C297EFD42003F8990 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = A099312B297EFD42003F8990 /* main.c */; };
+		A0993134297EFD9B003F8990 /* scanner.c in Sources */ = {isa = PBXBuildFile; fileRef = A0993133297EFD9B003F8990 /* scanner.c */; };
+		A0993137297EFE01003F8990 /* token.c in Sources */ = {isa = PBXBuildFile; fileRef = A0993136297EFE01003F8990 /* token.c */; };
+		A099313A297EFE5D003F8990 /* parser.c in Sources */ = {isa = PBXBuildFile; fileRef = A0993139297EFE5D003F8990 /* parser.c */; };
+		A099313D297EFF07003F8990 /* interpreter.c in Sources */ = {isa = PBXBuildFile; fileRef = A099313C297EFF07003F8990 /* interpreter.c */; };
+		A0993140297EFF86003F8990 /* file.c in Sources */ = {isa = PBXBuildFile; fileRef = A099313F297EFF86003F8990 /* file.c */; };
+		A0993143297F4177003F8990 /* hash_table.c in Sources */ = {isa = PBXBuildFile; fileRef = A0993142297F4177003F8990 /* hash_table.c */; };
+		A09931482985A980003F8990 /* object.c in Sources */ = {isa = PBXBuildFile; fileRef = A09931472985A97F003F8990 /* object.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +32,20 @@
 /* Begin PBXFileReference section */
 		A0993128297EFD42003F8990 /* ros_xcode */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ros_xcode; sourceTree = BUILT_PRODUCTS_DIR; };
 		A099312B297EFD42003F8990 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		A0993132297EFD9B003F8990 /* scanner.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = scanner.h; sourceTree = "<group>"; };
+		A0993133297EFD9B003F8990 /* scanner.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = scanner.c; sourceTree = "<group>"; };
+		A0993135297EFE01003F8990 /* token.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = token.h; sourceTree = "<group>"; };
+		A0993136297EFE01003F8990 /* token.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = token.c; sourceTree = "<group>"; };
+		A0993138297EFE5D003F8990 /* parser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = parser.h; sourceTree = "<group>"; };
+		A0993139297EFE5D003F8990 /* parser.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = parser.c; sourceTree = "<group>"; };
+		A099313B297EFF07003F8990 /* interpreter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = interpreter.h; sourceTree = "<group>"; };
+		A099313C297EFF07003F8990 /* interpreter.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = interpreter.c; sourceTree = "<group>"; };
+		A099313E297EFF86003F8990 /* file.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = file.h; sourceTree = "<group>"; };
+		A099313F297EFF86003F8990 /* file.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = file.c; sourceTree = "<group>"; };
+		A0993141297F4177003F8990 /* hash_table.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hash_table.h; sourceTree = "<group>"; };
+		A0993142297F4177003F8990 /* hash_table.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = hash_table.c; sourceTree = "<group>"; };
+		A09931442980D527003F8990 /* object.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = object.h; sourceTree = "<group>"; };
+		A09931472985A97F003F8990 /* object.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = object.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +79,20 @@
 			isa = PBXGroup;
 			children = (
 				A099312B297EFD42003F8990 /* main.c */,
+				A099313E297EFF86003F8990 /* file.h */,
+				A099313F297EFF86003F8990 /* file.c */,
+				A0993141297F4177003F8990 /* hash_table.h */,
+				A0993142297F4177003F8990 /* hash_table.c */,
+				A099313C297EFF07003F8990 /* interpreter.c */,
+				A099313B297EFF07003F8990 /* interpreter.h */,
+				A09931442980D527003F8990 /* object.h */,
+				A09931472985A97F003F8990 /* object.c */,
+				A0993138297EFE5D003F8990 /* parser.h */,
+				A0993139297EFE5D003F8990 /* parser.c */,
+				A0993132297EFD9B003F8990 /* scanner.h */,
+				A0993133297EFD9B003F8990 /* scanner.c */,
+				A0993135297EFE01003F8990 /* token.h */,
+				A0993136297EFE01003F8990 /* token.c */,
 			);
 			path = ros_xcode;
 			sourceTree = "<group>";
@@ -119,7 +154,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A09931482985A980003F8990 /* object.c in Sources */,
+				A099313D297EFF07003F8990 /* interpreter.c in Sources */,
+				A0993137297EFE01003F8990 /* token.c in Sources */,
+				A0993134297EFD9B003F8990 /* scanner.c in Sources */,
+				A099313A297EFE5D003F8990 /* parser.c in Sources */,
 				A099312C297EFD42003F8990 /* main.c in Sources */,
+				A0993143297F4177003F8990 /* hash_table.c in Sources */,
+				A0993140297EFF86003F8990 /* file.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
