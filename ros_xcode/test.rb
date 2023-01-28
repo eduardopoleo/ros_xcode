@@ -1,6 +1,4 @@
 a = 5
 b = 4
-z = 3
-puts a
-puts b
-puts z
+c = 6
+puts a <= b * c

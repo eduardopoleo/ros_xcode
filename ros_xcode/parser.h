@@ -81,6 +81,7 @@ Stmt **growStmtArray(StmtArray *array, int newCapacity);
 StmtArray parse(Scanner *scanner);
 Stmt *statement(Scanner *scanner);
 Expr *expression(Scanner *scanner);
+Expr *comparison(Scanner *scanner);
 Expr *term(Scanner *scanner);
 Expr *factor(Scanner *scanner);
 Expr *primary(Scanner *scanner);

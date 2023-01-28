@@ -44,20 +44,19 @@ void visitPuts(Stmt *stmt, HashTable *env) {
             }
             printf("\n");
             break;
+        case BOOLEAN_OBJ:
+            if (object->as.boolean.value == 1) {
+                printf("true\n");
+            } else {
+                printf("false\n");
+            }
+            break;
     }
 }
 
 void visitVarAssignment(Stmt *stmt, HashTable *env) {
     Object *object = evaluate(stmt->exprStmt, env);
-    printf(
-           "key %c, length: %d, value %f\n, object p %p\nAyu[dfgh[",
-           stmt->as.varAssignment.identifier[0],
-           stmt->as.varAssignment.length,
-           object->as.number.value,
-           &object
-    );
     insertEntry(env, stmt->as.varAssignment.identifier, stmt->as.varAssignment.length, object);
-//    printTable(env);
 }
 
 Object *evaluate(Expr *exp, HashTable *env) {
@@ -92,7 +91,6 @@ Object *visitVarExpression(Expr *exp, HashTable *env) {
 
 Object *visitBinary(Expr *exp, HashTable *env) {
     Object *object = initObject(NUMBER_OBJ);
-
     switch (exp->as.binary.op) {
         case PLUS:
             object->as.number.value = evaluate(exp->as.binary.left, env)->as.number.value + evaluate(exp->as.binary.right, env)->as.number.value;
@@ -108,6 +106,22 @@ Object *visitBinary(Expr *exp, HashTable *env) {
             break;
         case MODULO:
             object->as.number.value = (int)evaluate(exp->as.binary.left, env)->as.number.value % (int)evaluate(exp->as.binary.right, env)->as.number.value;
+            break;
+        case GREATER:
+            object->type = BOOLEAN_OBJ;
+            object->as.boolean.value = evaluate(exp->as.binary.left, env)->as.number.value > evaluate(exp->as.binary.right, env)->as.number.value;
+            break;
+        case GREATER_EQUAL:
+            object->type = BOOLEAN_OBJ;            
+            object->as.boolean.value = evaluate(exp->as.binary.left, env)->as.number.value >= evaluate(exp->as.binary.right, env)->as.number.value;
+            break;
+        case LESS:
+            object->type = BOOLEAN_OBJ;
+            object->as.boolean.value = evaluate(exp->as.binary.left, env)->as.number.value < evaluate(exp->as.binary.right, env)->as.number.value;
+            break;
+        case LESS_EQUAL:
+            object->type = BOOLEAN_OBJ;
+            object->as.boolean.value = evaluate(exp->as.binary.left, env)->as.number.value <= evaluate(exp->as.binary.right, env)->as.number.value;
             break;
     }
     return object;

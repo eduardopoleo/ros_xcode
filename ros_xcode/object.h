@@ -10,23 +10,29 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 typedef enum ObjectType {
-   NUMBER_OBJ,
-   STRING_OBJ
+    NUMBER_OBJ,
+    STRING_OBJ,
+    BOOLEAN_OBJ
 } ObjectType;
 
 typedef struct Object {
     ObjectType type;
     union {
-       struct {
+        struct {
            double value;
-       } number;
+        } number;
 
         struct {
             int length;
             char *value;
         } string;
+        
+        struct {
+            int value;
+        } boolean;
     } as;
 } Object;
 

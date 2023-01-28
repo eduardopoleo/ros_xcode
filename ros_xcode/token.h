@@ -11,17 +11,26 @@
 #include <stdio.h>
 
 typedef enum TokenType {
-    PLUS, // 0
-    MINUS, // 1
-    NUMBER, // 2
-    STRING, // 3
-    STAR, // 4
-    FORWARD_SLASH, // 5
-    MODULO, // 6
-    END_OF_FILE, // 7
-    PUTS, //8
-    IDENTIFIER, // 9
-    EQUAL, //10
+    PLUS,
+    MINUS,
+    NUMBER,
+    STRING,
+    STAR,
+    FORWARD_SLASH,
+    MODULO,
+    END_OF_FILE,
+    PUTS,
+    IDENTIFIER,
+    EQUAL,
+    EQUAL_EQUAL,
+    TRUE_TOK,
+    FALSE_TOK,
+    GREATER,
+    GREATER_EQUAL,
+    LESS,
+    LESS_EQUAL,
+    BANG,
+    BANG_EQUAL,
     NULL_TOKEN
 } TokenType;
 

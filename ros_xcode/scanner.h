@@ -28,9 +28,11 @@ typedef struct Keyword {
 } Keyword;
 
 static Keyword keywords[] = {
-  {"puts", 4, PUTS},
-  // sentinel
-  {NULL, 0, END_OF_FILE}
+    {"puts", 4, PUTS},
+    {"true", 4, TRUE_TOK},
+    {"false", 5, FALSE_TOK},
+    // sentinel
+    {NULL, 0, END_OF_FILE}
 };
 
 void initScanner(Scanner *scanner, char *code);

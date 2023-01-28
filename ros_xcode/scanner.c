@@ -102,7 +102,39 @@ Token calculateToken(Scanner *scanner) {
             token = newToken(MODULO, scanner->line, 1, scanner->start);
             break;
         case '=':
-            token = newToken(EQUAL, scanner->line, 1, scanner->start);
+            if (scanner->current[0] == '=') {
+                token = newToken(EQUAL_EQUAL, scanner->line, 1, scanner->start);
+                /*
+                    account for the extra equal so that we do not parse it next time around
+                */
+                scanner->current++;
+            } else {
+                token = newToken(EQUAL, scanner->line, 1, scanner->start);
+            }
+            break;
+        case '!':
+            if (scanner->current[0] == '=') {
+                token = newToken(BANG_EQUAL, scanner->line, 1, scanner->start);
+                scanner->current++;
+            } else {
+                token = newToken(BANG, scanner->line, 1, scanner->start);
+            }
+            break;
+        case '>':
+            if (scanner->current[0] == '=') {
+                token = newToken(GREATER_EQUAL, scanner->line, 1, scanner->start);
+                scanner->current++;
+            } else {
+                token = newToken(GREATER, scanner->line, 1, scanner->start);
+            }
+            break;
+        case '<':
+            if (scanner->current[0] == '=') {
+                token = newToken(LESS_EQUAL, scanner->line, 1, scanner->start);
+                scanner->current++;
+            } else {
+                token = newToken(LESS, scanner->line, 1, scanner->start);
+            }
             break;
         case '\0':
             token = newToken(END_OF_FILE, scanner->line, 1, scanner->start);

@@ -28,7 +28,6 @@ void insertEntry(HashTable *table, char *key, int keyLength, Object *value) {
     HashTableEntry *newEntry = initEntry(key, keyLength, value);
 
     int bucketIndex = hashIndex(key, keyLength, table->num_bins);
-    printf("key %c, bucket index %d\n", key[0], bucketIndex);
     HashTableEntry *currentEntry = table->bins[bucketIndex];
 
     if (currentEntry == NULL) {

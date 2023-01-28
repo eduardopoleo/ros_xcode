@@ -47,28 +47,47 @@ Stmt *statement(Scanner *scanner) {
 }
 
 Expr *expression(Scanner *scanner) {
-  return term(scanner);
+  return comparison(scanner);
+}
+
+// comparison -> term((> | < | >= | <=) term)*
+Expr *comparison(Scanner *scanner) {
+  Expr *exp = term(scanner);
+  while(match(scanner, GREATER) ||
+        match(scanner, GREATER_EQUAL) ||
+        match(scanner, LESS) ||
+        match(scanner, LESS_EQUAL))
+  {
+      
+      TokenType op = scanner->peek_prev.type;
+      Expr *expr = term(scanner);
+
+      exp = newBinary(exp, expr, op, scanner->line);
+  }
+  return exp;
 }
 
 // term -> factor ((+|-) factor)*
 Expr *term(Scanner *scanner) {
-  Expr *exp = factor(scanner);
-  while(match(scanner, PLUS) || match(scanner, MINUS)) {
-    TokenType op = scanner->peek_prev.type;
-    exp = newBinary(exp, factor(scanner), op, scanner->line);
-  }
-  return exp;
+    Expr *exp = factor(scanner);
+   
+    while(match(scanner, PLUS) || match(scanner, MINUS)) {
+        TokenType op = scanner->peek_prev.type;
+        exp = newBinary(exp, factor(scanner), op, scanner->line);
+    }
+    return exp;
 }
 
 // factor -> primary ((*|/|%) primary)*
 Expr *factor(Scanner *scanner) {
-  Expr *exp = primary(scanner);
-  while(match(scanner, STAR) || match(scanner, FORWARD_SLASH) || match(scanner, MODULO)) {
-    TokenType op = scanner->peek_prev.type;
-    exp = newBinary(exp, primary(scanner), op, scanner->line);
-  }
+    Expr *exp = primary(scanner);
+    
+    while(match(scanner, STAR) || match(scanner, FORWARD_SLASH) || match(scanner, MODULO)) {
+        TokenType op = scanner->peek_prev.type;
+        exp = newBinary(exp, primary(scanner), op, scanner->line);
+    }
 
-  return exp;
+    return exp;
 }
 
 // primary -> NUMBER

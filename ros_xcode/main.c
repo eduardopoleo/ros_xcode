@@ -31,8 +31,9 @@
   - [x] Free objects: ast, dynamic arrays
   Stage 2:
   - [x] puts
-  - variables
+  - [x] variables
   - boolean related binary operation
+    - ">" "<" ">=" "<=" "=="
   - control flow (if, for, while)
   - functions
   - closures (blocks)
@@ -53,6 +54,8 @@ int main(int argc, char *argv[]) {
     interpret(&statements, globalEnv);
 
     // Free all objects
+    // Todo need to free the hash tables and its related
+    // value objects
     freeStatements(&statements);
     free(statements.list);
     free(buffer);
