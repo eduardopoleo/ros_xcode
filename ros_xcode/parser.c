@@ -138,17 +138,27 @@ Stmt *parsePuts(Scanner *scanner) {
 
 Stmt *parseIf(Scanner *scanner) {
     Expr *condition = expression(scanner);
+
     StmtArray *ifStmts = initStmtArray();
-    
     Stmt *stmt;
-    while(!match(scanner, END)) {
+    while(!match(scanner, END) && !match(scanner, ELSE)) {
         stmt = statement(scanner);
         writeStmtArray(ifStmts, stmt);
+    }
+
+    StmtArray *elseStmts = initStmtArray();
+    Stmt *elseStmt;
+    if (scanner->peek_prev.type == ELSE) {
+        while(!match(scanner, END)) {
+            elseStmt = statement(scanner);
+            writeStmtArray(elseStmts, elseStmt);
+        }
     }
 
     Stmt *ifStmt = newStmt(scanner->line, IF_STMT);
     ifStmt->as.ifStmt.condition = condition;
     ifStmt->as.ifStmt.ifStmts = ifStmts;
+    ifStmt->as.ifStmt.elseStmts = elseStmts;
 
     return ifStmt;
 }

@@ -64,6 +64,13 @@ void visitIf(Stmt *stmt, HashTable *env) {
         for(int i = 0; i < count; i++) {
             execute(list[i], env);
         }
+    } else {
+        int count = stmt->as.ifStmt.elseStmts->size;
+        Stmt **list = stmt->as.ifStmt.elseStmts->list;
+
+        for(int i = 0; i < count; i++) {
+            execute(list[i], env);
+        }
     }
 }
 
