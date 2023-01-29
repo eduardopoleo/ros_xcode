@@ -32,7 +32,7 @@
   Stage 2:
   - [x] puts
   - [x] variables
-  - boolean related binary operation
+  - [x] boolean related binary operation
     - ">" "<" ">=" "<=" "==" "!="
   - control flow (if, for, while)
   - functions
@@ -49,15 +49,15 @@ int main(int argc, char *argv[]) {
     
     // Interpret program
     initScanner(&scanner, buffer);
-    StmtArray statements = parse(&scanner);
+    StmtArray *statements = parse(&scanner);
     HashTable *globalEnv = initHashTable();
-    interpret(&statements, globalEnv);
+    interpret(statements, globalEnv);
 
     // Free all objects
     // Todo need to free the hash tables and its related
     // value objects
-    freeStatements(&statements);
-    free(statements.list);
+    freeStatements(statements);
+    free(statements->list);
     free(buffer);
 
     return 0;

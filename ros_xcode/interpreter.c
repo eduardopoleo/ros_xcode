@@ -23,6 +23,9 @@ void execute(Stmt *stmt, HashTable *env) {
         case PUTS_STMT:
             visitPuts(stmt, env);
             break;
+        case IF_STMT:
+            visitIf(stmt, env);
+            break;
         case EXPR_STMT:
             evaluate(stmt->exprStmt, env);
             break;
@@ -51,6 +54,19 @@ void visitPuts(Stmt *stmt, HashTable *env) {
     }
 }
 
+void visitIf(Stmt *stmt, HashTable *env) {
+    Object *conditional = evaluate(stmt->as.ifStmt.condition, env);
+
+    if (conditional->as.boolean.value == true) {
+        int count = stmt->as.ifStmt.ifStmts->size;
+        Stmt **list = stmt->as.ifStmt.ifStmts->list;
+
+        for(int i = 0; i < count; i++) {
+            execute(list[i], env);
+        }
+    }
+}
+
 Object *visitVarAssignment(Expr *exp, HashTable *env) {
     Object *object = evaluate(exp->as.varAssignment.value, env);
     insertEntry(env, exp->as.varAssignment.name, exp->as.varAssignment.length, object);
@@ -65,6 +81,8 @@ Object *evaluate(Expr *exp, HashTable *env) {
             return visitNumberLiteral(exp);
         case STRING_LITERAL:
             return visitStringLiteral(exp);
+        case BOOLEAN:
+            return visitBoolean(exp);
         case VAR_EXP:
             return visitVarExpression(exp, env);
         case VAR_ASSIGNMENT:
@@ -82,6 +100,12 @@ Object *visitStringLiteral(Expr *exp) {
 Object *visitNumberLiteral(Expr *exp) {
     Object *object = initObject(NUMBER_OBJ);
     object->as.number.value = exp->as.numberLiteral.number;
+    return object;
+}
+
+Object *visitBoolean(Expr *exp) {
+    Object *object = initObject(BOOLEAN_OBJ);
+    object->as.boolean.value = exp->as.boolExp.value;
     return object;
 }
 

@@ -31,6 +31,9 @@ static Keyword keywords[] = {
     {"puts", 4, PUTS},
     {"true", 4, TRUE_TOK},
     {"false", 5, FALSE_TOK},
+    {"if", 2, IF},
+    {"else", 4, ELSE},
+    {"end", 3, END},
     // sentinel
     {NULL, 0, END_OF_FILE}
 };

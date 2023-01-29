@@ -10,28 +10,49 @@
 #include "scanner.h"
 #include "parser.h"
 
-StmtArray parse(Scanner *scanner) {
-    StmtArray stmtpArray;
-    initStmtArray(&stmtpArray);
+StmtArray *parse(Scanner *scanner) {
+    StmtArray *array = initStmtArray();
 
     Stmt *stmt;
     while(!atEnd(scanner)) {
         stmt = statement(scanner);
-        writeStmtArray(&stmtpArray, stmt);
+        writeStmtArray(array, stmt);
     }
 
-    return stmtpArray;
+    return array;
 }
 
 Stmt *statement(Scanner *scanner) {
     if(match(scanner, PUTS)) {
         Expr *exp = expression(scanner);
+        // change this to parsePuts
         return newPuts(scanner->line, exp);
+    }
+    
+    if (match(scanner, IF)) {
+        return parseIf(scanner);
     }
 
     Stmt *stmt = newStmt(scanner->line, EXPR_STMT);
     stmt->exprStmt = expression(scanner);
     return stmt;
+}
+
+Stmt *parseIf(Scanner *scanner) {
+    Expr *condition = expression(scanner);
+    StmtArray *ifStmts = initStmtArray();
+    
+    Stmt *stmt;
+    while(!match(scanner, END)) {
+        stmt = statement(scanner);
+        writeStmtArray(ifStmts, stmt);
+    }
+
+    Stmt *ifStmt = newStmt(scanner->line, IF_STMT);
+    ifStmt->as.ifStmt.condition = condition;
+    ifStmt->as.ifStmt.ifStmts = ifStmts;
+
+    return ifStmt;
 }
 
 Expr *expression(Scanner *scanner) {
@@ -112,6 +133,12 @@ Expr *primary(Scanner *scanner) {
         case NUMBER:
             exp = newNumberLiteral(&token);
             break;
+        case TRUE_TOK:
+            exp = newBooleanExpr(token, true);
+            break;
+        case FALSE_TOK:
+            exp = newBooleanExpr(token, false);
+            break;
         case IDENTIFIER:
             exp = newVarExpression(token);
     }
@@ -134,6 +161,11 @@ Expr *newVarAssignment(int line, Expr *identifier, Expr *value) {
     return exp;
 }
 
+Expr *newBooleanExpr(Token token, bool value) {
+    Expr *exp = newExpr(token.line, BOOLEAN);
+    exp->as.boolExp.value = value;
+    return exp;
+}
 
 Expr *newVarExpression(Token token) {
     Expr *exp = newExpr(token.line, VAR_EXP);
@@ -213,16 +245,21 @@ void freeExpression(Expr *exp) {
 }
 
 ////////////// STMT ARRAY ////////////////////
-void initStmtArray(StmtArray *array) {
+StmtArray *initStmtArray(void) {
+    StmtArray *array = malloc(sizeof(StmtArray));
+
     array->list = NULL;
     array->capacity = 0;
     array->size = 0;
+
+    return array;
 }
 
 void writeStmtArray(StmtArray *array, Stmt *stmt) {
     if (array->size + 1 > array->capacity) {
         int newCapacity = growStmtCapacity(array->capacity);
         array->list = growStmtArray(array, newCapacity);
+        array->capacity = newCapacity;
     }
 
     array->list[array->size] = stmt;

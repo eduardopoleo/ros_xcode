@@ -31,7 +31,7 @@ typedef struct Object {
         } string;
         
         struct {
-            int value;
+            bool value;
         } boolean;
     } as;
 } Object;

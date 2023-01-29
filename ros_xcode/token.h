@@ -31,6 +31,9 @@ typedef enum TokenType {
     LESS_EQUAL,
     BANG,
     BANG_EQUAL,
+    IF,
+    ELSE,
+    END,
     NULL_TOKEN
 } TokenType;
 

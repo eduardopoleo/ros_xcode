@@ -16,6 +16,7 @@ typedef enum ExprType {
     BINARY,
     NUMBER_LITERAL,
     STRING_LITERAL,
+    BOOLEAN,
     VAR_EXP,
     VAR_ASSIGNMENT
 } ExprType;
@@ -45,6 +46,10 @@ typedef struct Expr {
         } varExp;
         
         struct {
+            bool value;
+        } boolExp;
+        
+        struct {
             char *name;
             int length;
             struct Expr *value;
@@ -54,7 +59,8 @@ typedef struct Expr {
 
 typedef enum StmtType {
     PUTS_STMT,
-    EXPR_STMT
+    EXPR_STMT,
+    IF_STMT
 } StmtType;
 
 typedef struct Stmt {
@@ -64,6 +70,12 @@ typedef struct Stmt {
       struct {
           Expr *exp;
       } puts;
+      
+      struct {
+          Expr *condition;
+          struct StmtArray *ifStmts;
+          struct StmtArray *elseStmts;
+      } ifStmt;
       
       struct {
           int length;
@@ -79,13 +91,16 @@ typedef struct StmtArray {
   int capacity;
 } StmtArray;
 
-void initStmtArray(StmtArray *array);
+
+StmtArray *initStmtArray(void);
 void writeStmtArray(StmtArray *array, Stmt *stmt);
 int growStmtCapacity(int capacity);
 Stmt **growStmtArray(StmtArray *array, int newCapacity);
 
-StmtArray parse(Scanner *scanner);
+StmtArray *parse(Scanner *scanner);
 Stmt *statement(Scanner *scanner);
+Stmt *parseIf(Scanner *scanner);
+
 Expr *expression(Scanner *scanner);
 Expr *assignment(Scanner *scanner);
 Expr *equality(Scanner *scanner);
@@ -96,8 +111,10 @@ Expr *primary(Scanner *scanner);
 
 Stmt *newStmt(int line, StmtType type);
 Stmt *newPuts(int line, Expr *exp);
+
 Expr *newExpr(int line, ExprType type);
 Expr *newBinary(Expr *left, Expr *right, TokenType op, int line);
+Expr *newBooleanExpr(Token token, bool value);
 Expr *newNumberLiteral(Token *token);
 Expr *newStringLiteral(Token *token);
 Expr *newVarExpression(Token token);
