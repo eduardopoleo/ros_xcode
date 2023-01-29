@@ -23,7 +23,6 @@ StmtArray *parse(Scanner *scanner) {
 }
 
 Stmt *statement(Scanner *scanner) {
-//    printf("scanner->peek.type, %d\n", scanner->peek.type);
     if(match(scanner, PUTS)) {
         Expr *exp = expression(scanner);
         // change this to parsePuts
