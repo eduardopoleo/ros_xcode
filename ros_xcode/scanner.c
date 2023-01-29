@@ -7,9 +7,11 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "scanner.h"
 #include "token.h"
 #include <stdbool.h>
+#include <ctype.h>
 
 void initScanner(Scanner *scanner, char *code) {
     scanner->start = code;
@@ -60,11 +62,14 @@ bool atEnd(Scanner *scanner) {
 
 Token calculateToken(Scanner *scanner) {
     // Handles white spaces,
+    
     while(isWhiteSpace(scanner->start[0])) {
+//        printf("white space skipped\n");
         scanner->start++;
     }
 
     while(isNewLine(scanner->start[0])) {
+//        printf("new line skipped skipped\n");
         scanner->line++;
         scanner->start++;
     }
@@ -84,7 +89,7 @@ Token calculateToken(Scanner *scanner) {
     }
 
     scanner->current = scanner->start + 1;
-    Token token;
+    Token token = newToken(EMPTY_TOKEN, scanner->line, 1, scanner->start);
     switch (scanner->start[0]) {
         case '+':
             token = newToken(PLUS, scanner->line, 1, scanner->start);
@@ -174,6 +179,11 @@ Token calculateToken(Scanner *scanner) {
     if (!atEnd(scanner)) {
         scanner->start = scanner->current;
     }
+    
+    if (token.type == EMPTY_TOKEN) {
+        printf("exiting character %c not recognized!\n", scanner->start[0]);
+        exit(1);
+    }
     return token;
 }
 
@@ -203,7 +213,7 @@ void captureFullString(Scanner *scanner) {
 }
 
 bool isNewLine(char c) {
-    if(c == '\n') {
+    if(c == '\n' ) {
         return true;
     }
 
@@ -211,7 +221,7 @@ bool isNewLine(char c) {
 }
 
 bool isWhiteSpace(char c) {
-    if(c == ' ' || c == '\t' || c == '\r') {
+    if(isspace(c)) {
         return true;
     }
 

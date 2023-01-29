@@ -23,6 +23,7 @@ StmtArray *parse(Scanner *scanner) {
 }
 
 Stmt *statement(Scanner *scanner) {
+//    printf("scanner->peek.type, %d\n", scanner->peek.type);
     if(match(scanner, PUTS)) {
         Expr *exp = expression(scanner);
         // change this to parsePuts
@@ -126,6 +127,7 @@ Expr *factor(Scanner *scanner) {
 Expr *primary(Scanner *scanner) {
     Token token = advanceToken(scanner);
     Expr *exp;
+//    printf("got to primary with type %d\n", token.type);
     switch (token.type){
         case STRING:
             exp = newStringLiteral(&token);

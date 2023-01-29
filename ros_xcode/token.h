@@ -34,7 +34,7 @@ typedef enum TokenType {
     IF,
     ELSE,
     END,
-    NULL_TOKEN
+    EMPTY_TOKEN
 } TokenType;
 
 typedef struct Token {

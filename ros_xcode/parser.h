@@ -64,32 +64,32 @@ typedef enum StmtType {
 } StmtType;
 
 typedef struct Stmt {
-  StmtType type;
-  int line;
-  union {
-      struct {
-          Expr *exp;
-      } puts;
+    StmtType type;
+    int line;
+    union {
+        struct {
+            Expr *exp;
+        } puts;
       
-      struct {
-          Expr *condition;
-          struct StmtArray *ifStmts;
-          struct StmtArray *elseStmts;
-      } ifStmt;
+        struct {
+            Expr *condition;
+            struct StmtArray *ifStmts;
+            struct StmtArray *elseStmts;
+        } ifStmt;
       
-      struct {
-          int length;
-          char *identifier;
-      } varAssignment;
-  } as;
-  Expr *exprStmt;
+        struct {
+            int length;
+            char *identifier;
+        } varAssignment;
+    } as;
+    Expr *exprStmt;
 } Stmt;
 
 typedef struct StmtArray {
-  Stmt **list;
-  int size;
-  int capacity;
-} StmtArray;
+    Stmt **list;
+    int size;
+    int capacity;
+}   StmtArray;
 
 
 StmtArray *initStmtArray(void);
