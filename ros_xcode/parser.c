@@ -24,9 +24,7 @@ StmtArray *parse(Scanner *scanner) {
 
 Stmt *statement(Scanner *scanner) {
     if(match(scanner, PUTS)) {
-        Expr *exp = expression(scanner);
-        // change this to parsePuts
-        return newPuts(scanner->line, exp);
+        return parsePuts(scanner);
     }
     
     if (match(scanner, IF)) {
@@ -36,23 +34,6 @@ Stmt *statement(Scanner *scanner) {
     Stmt *stmt = newStmt(scanner->line, EXPR_STMT);
     stmt->exprStmt = expression(scanner);
     return stmt;
-}
-
-Stmt *parseIf(Scanner *scanner) {
-    Expr *condition = expression(scanner);
-    StmtArray *ifStmts = initStmtArray();
-    
-    Stmt *stmt;
-    while(!match(scanner, END)) {
-        stmt = statement(scanner);
-        writeStmtArray(ifStmts, stmt);
-    }
-
-    Stmt *ifStmt = newStmt(scanner->line, IF_STMT);
-    ifStmt->as.ifStmt.condition = condition;
-    ifStmt->as.ifStmt.ifStmts = ifStmts;
-
-    return ifStmt;
 }
 
 Expr *expression(Scanner *scanner) {
@@ -148,10 +129,28 @@ Expr *primary(Scanner *scanner) {
 }
 
 // Supporting functions: Should go into another file
-Stmt *newPuts(int line, Expr *exp) {
-    Stmt *stmt = newStmt(line, PUTS_STMT);
+Stmt *parsePuts(Scanner *scanner) {
+    Expr *exp = expression(scanner);
+    Stmt *stmt = newStmt(scanner->line, PUTS_STMT);
     stmt->as.puts.exp = exp;
     return stmt;
+}
+
+Stmt *parseIf(Scanner *scanner) {
+    Expr *condition = expression(scanner);
+    StmtArray *ifStmts = initStmtArray();
+    
+    Stmt *stmt;
+    while(!match(scanner, END)) {
+        stmt = statement(scanner);
+        writeStmtArray(ifStmts, stmt);
+    }
+
+    Stmt *ifStmt = newStmt(scanner->line, IF_STMT);
+    ifStmt->as.ifStmt.condition = condition;
+    ifStmt->as.ifStmt.ifStmts = ifStmts;
+
+    return ifStmt;
 }
 
 Expr *newVarAssignment(int line, Expr *identifier, Expr *value) {

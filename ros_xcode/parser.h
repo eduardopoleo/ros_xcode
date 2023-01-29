@@ -99,6 +99,7 @@ Stmt **growStmtArray(StmtArray *array, int newCapacity);
 
 StmtArray *parse(Scanner *scanner);
 Stmt *statement(Scanner *scanner);
+Stmt *parsePuts(Scanner *scanner);
 Stmt *parseIf(Scanner *scanner);
 
 Expr *expression(Scanner *scanner);
@@ -110,8 +111,6 @@ Expr *factor(Scanner *scanner);
 Expr *primary(Scanner *scanner);
 
 Stmt *newStmt(int line, StmtType type);
-Stmt *newPuts(int line, Expr *exp);
-
 Expr *newExpr(int line, ExprType type);
 Expr *newBinary(Expr *left, Expr *right, TokenType op, int line);
 Expr *newBooleanExpr(Token token, bool value);
