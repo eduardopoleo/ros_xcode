@@ -1,7 +1,9 @@
 if 5 != 5
-  puts "positive conditions"
-  puts "multiple statments positive"
+  puts "if condition"
+elsif false
+  puts "first elif"
+elsif false
+  puts "second elif"
 else
-  puts "negative"
-  puts "mult negative"
+  puts "else"
 end

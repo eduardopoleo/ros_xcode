@@ -55,21 +55,18 @@ void visitPuts(Stmt *stmt, HashTable *env) {
 }
 
 void visitIf(Stmt *stmt, HashTable *env) {
-    Object *conditional = evaluate(stmt->as.ifStmt.condition, env);
-
-    if (conditional->as.boolean.value == true) {
-        int count = stmt->as.ifStmt.ifStmts->size;
-        Stmt **list = stmt->as.ifStmt.ifStmts->list;
-
-        for(int i = 0; i < count; i++) {
-            execute(list[i], env);
-        }
-    } else {
-        int count = stmt->as.ifStmt.elseStmts->size;
-        Stmt **list = stmt->as.ifStmt.elseStmts->list;
-
-        for(int i = 0; i < count; i++) {
-            execute(list[i], env);
+    int count = stmt->as.ifStmt.conditionals->size;
+    
+    for(int i = 0; i < count; i++) {
+        Conditional *conditional = stmt->as.ifStmt.conditionals->list[i];
+        Object *conditionMet = evaluate(conditional->condition, env);
+        
+        if(conditionMet->as.boolean.value == true) {
+            int statementCount = conditional->statements->size;
+            for(int i = 0; i < statementCount; i++) {
+                execute(conditional->statements->list[i], env);
+            }
+            break;
         }
     }
 }

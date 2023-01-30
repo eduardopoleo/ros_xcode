@@ -137,29 +137,33 @@ Stmt *parsePuts(Scanner *scanner) {
 }
 
 Stmt *parseIf(Scanner *scanner) {
-    Expr *condition = expression(scanner);
+    ConditionalArray *conditionals = initConditionalArray();
 
-    StmtArray *ifStmts = initStmtArray();
-    Stmt *stmt;
-    while(!match(scanner, END) && !match(scanner, ELSE)) {
-        stmt = statement(scanner);
-        writeStmtArray(ifStmts, stmt);
-    }
+    Conditional *conditional = newConditional();
+    conditional->condition = expression(scanner);
 
-    StmtArray *elseStmts = initStmtArray();
-    Stmt *elseStmt;
-    if (scanner->peek_prev.type == ELSE) {
-        while(!match(scanner, END)) {
-            elseStmt = statement(scanner);
-            writeStmtArray(elseStmts, elseStmt);
+    while(!match(scanner, END)) {
+        if (match(scanner, ELSIF)) {
+            writeConditionalArray(conditionals, conditional);
+            conditional = newConditional();
+            conditional->condition = expression(scanner);
         }
+
+        if (match(scanner, ELSE)) {
+            writeConditionalArray(conditionals, conditional);
+            conditional = newConditional();
+            conditional->condition = newBooleanExpr(scanner->peek_prev, true);
+        }
+
+        Stmt *stmt = statement(scanner);
+
+        writeStmtArray(conditional->statements, stmt);
     }
-
+    
+    writeConditionalArray(conditionals, conditional);
+    
     Stmt *ifStmt = newStmt(scanner->line, IF_STMT);
-    ifStmt->as.ifStmt.condition = condition;
-    ifStmt->as.ifStmt.ifStmts = ifStmts;
-    ifStmt->as.ifStmt.elseStmts = elseStmts;
-
+    ifStmt->as.ifStmt.conditionals = conditionals;
     return ifStmt;
 }
 
@@ -221,6 +225,12 @@ Expr *newExpr(int line, ExprType type) {
     return exp;
 }
 
+Conditional *newConditional(void) {
+    Conditional *conditional = (Conditional*)malloc(sizeof(*conditional));
+    conditional->statements = initStmtArray();
+    return conditional;
+}
+
 void freeStatements(StmtArray *array) {
     for(int i = 0; i < array->size; i++) {
        freeStatement(array->list[i]);
@@ -254,6 +264,7 @@ void freeExpression(Expr *exp) {
   }
 }
 
+// Dry this up into an Array module.
 ////////////// STMT ARRAY ////////////////////
 StmtArray *initStmtArray(void) {
     StmtArray *array = malloc(sizeof(StmtArray));
@@ -288,3 +299,35 @@ Stmt **growStmtArray(StmtArray *array, int newCapacity) {
     return (Stmt**)realloc(array->list, newCapacity * sizeof(Stmt));
 }
 //////////////////////////////////////////////
+ConditionalArray *initConditionalArray(void) {
+    ConditionalArray *array = malloc(sizeof(ConditionalArray));
+
+    array->list = NULL;
+    array->capacity = 0;
+    array->size = 0;
+
+    return array;
+}
+
+void writeConditionalArray(ConditionalArray *array, Conditional *conditional) {
+    if (array->size + 1 > array->capacity) {
+        int newCapacity = growConditionalCapacity(array->capacity);
+        array->list = growConditionalArray(array, newCapacity);
+        array->capacity = newCapacity;
+    }
+
+    array->list[array->size] = conditional;
+    array->size++;
+}
+
+int growConditionalCapacity(int capacity) {
+    if (capacity < 8) {
+        return 8;
+    } else {
+        return 2 * capacity;
+    }
+}
+//
+Conditional **growConditionalArray(ConditionalArray *array, int newCapacity) {
+    return (Conditional**)realloc(array->list, newCapacity * sizeof(Conditional));
+}

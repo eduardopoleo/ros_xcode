@@ -32,6 +32,7 @@ static Keyword keywords[] = {
     {"true", 4, TRUE_TOK},
     {"false", 5, FALSE_TOK},
     {"if", 2, IF},
+    {"elsif", 5, ELSIF},
     {"else", 4, ELSE},
     {"end", 3, END},
     // sentinel

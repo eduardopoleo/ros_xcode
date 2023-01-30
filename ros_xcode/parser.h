@@ -63,6 +63,7 @@ typedef enum StmtType {
     IF_STMT
 } StmtType;
 
+
 typedef struct Stmt {
     StmtType type;
     int line;
@@ -72,9 +73,7 @@ typedef struct Stmt {
         } puts;
       
         struct {
-            Expr *condition;
-            struct StmtArray *ifStmts;
-            struct StmtArray *elseStmts;
+            struct ConditionalArray *conditionals;
         } ifStmt;
       
         struct {
@@ -91,11 +90,27 @@ typedef struct StmtArray {
     int capacity;
 }   StmtArray;
 
+typedef struct Conditional {
+    Expr *condition;
+    struct StmtArray *statements;
+} Conditional;
+
+typedef struct ConditionalArray {
+    Conditional **list;
+    int size;
+    int capacity;
+}   ConditionalArray;
+
 
 StmtArray *initStmtArray(void);
 void writeStmtArray(StmtArray *array, Stmt *stmt);
 int growStmtCapacity(int capacity);
 Stmt **growStmtArray(StmtArray *array, int newCapacity);
+
+ConditionalArray *initConditionalArray(void);
+void writeConditionalArray(ConditionalArray *array, Conditional *conditional);
+int growConditionalCapacity(int capacity);
+Conditional **growConditionalArray(ConditionalArray *array, int newCapacity);
 
 StmtArray *parse(Scanner *scanner);
 Stmt *statement(Scanner *scanner);
@@ -112,6 +127,7 @@ Expr *primary(Scanner *scanner);
 
 Stmt *newStmt(int line, StmtType type);
 Expr *newExpr(int line, ExprType type);
+Conditional *newConditional(void);
 Expr *newBinary(Expr *left, Expr *right, TokenType op, int line);
 Expr *newBooleanExpr(Token token, bool value);
 Expr *newNumberLiteral(Token *token);

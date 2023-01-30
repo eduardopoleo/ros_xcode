@@ -32,6 +32,7 @@ typedef enum TokenType {
     BANG,
     BANG_EQUAL,
     IF,
+    ELSIF,
     ELSE,
     END,
     EMPTY_TOKEN
