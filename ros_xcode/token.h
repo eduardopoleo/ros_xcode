@@ -35,6 +35,8 @@ typedef enum TokenType {
     ELSIF,
     ELSE,
     END,
+    WHILE,
+    FOR,
     EMPTY_TOKEN
 } TokenType;
 

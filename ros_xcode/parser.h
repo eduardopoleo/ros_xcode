@@ -61,7 +61,8 @@ typedef struct Expr {
 typedef enum StmtType {
     PUTS_STMT,
     EXPR_STMT,
-    IF_STMT
+    IF_STMT,
+    WHILE_STMT
 } StmtType;
 
 
@@ -76,7 +77,12 @@ typedef struct Stmt {
         struct {
             struct ConditionalArray *conditionals;
         } ifStmt;
-      
+        
+        struct {
+            Expr *condition;
+            struct StmtArray *statements;
+        } whileStmt;
+
         struct {
             int length;
             char *identifier;
@@ -110,6 +116,7 @@ StmtArray *parse(Scanner *scanner);
 Stmt *statement(Scanner *scanner);
 Stmt *parsePuts(Scanner *scanner);
 Stmt *parseIf(Scanner *scanner);
+Stmt *parseWhile(Scanner *scanner);
 
 Expr *expression(Scanner *scanner);
 Expr *assignment(Scanner *scanner);

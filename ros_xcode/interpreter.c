@@ -26,6 +26,9 @@ void execute(Stmt *stmt, HashTable *env) {
         case IF_STMT:
             visitIf(stmt, env);
             break;
+        case WHILE_STMT:
+            visitWhile(stmt, env);
+            break;
         case EXPR_STMT:
             evaluate(stmt->exprStmt, env);
             break;
@@ -67,6 +70,17 @@ void visitIf(Stmt *stmt, HashTable *env) {
                 execute(conditional->statements->list[i], env);
             }
             break;
+        }
+    }
+}
+
+void visitWhile(Stmt *stmt, HashTable *env) {
+    while (evaluate(stmt->as.whileStmt.condition, env)->as.boolean.value) {
+        Stmt *statement;
+
+        for(int i = 0; i < stmt->as.whileStmt.statements->size; i++) {
+            statement = stmt->as.whileStmt.statements->list[i];
+            execute(statement, env);
         }
     }
 }

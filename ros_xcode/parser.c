@@ -30,6 +30,10 @@ Stmt *statement(Scanner *scanner) {
     if (match(scanner, IF)) {
         return parseIf(scanner);
     }
+    
+    if (match(scanner, WHILE)) {
+        return parseWhile(scanner);
+    }
 
     Stmt *stmt = newStmt(scanner->line, EXPR_STMT);
     stmt->exprStmt = expression(scanner);
@@ -165,6 +169,24 @@ Stmt *parseIf(Scanner *scanner) {
     Stmt *ifStmt = newStmt(scanner->line, IF_STMT);
     ifStmt->as.ifStmt.conditionals = conditionals;
     return ifStmt;
+}
+
+Stmt *parseWhile(Scanner *scanner) {
+    Stmt *whileStmt = newStmt(scanner->line, WHILE_STMT);
+    Expr *condition = expression(scanner);
+    
+    whileStmt->as.whileStmt.condition = condition;
+    StmtArray *statements = initStmtArray();
+    
+    Stmt *stmt;
+    while(!match(scanner, END)) {
+        stmt = statement(scanner);
+        ADD_ARRAY_ELEMENT(statements, stmt, Stmt);
+    }
+
+    whileStmt->as.whileStmt.statements = statements;
+
+    return whileStmt;
 }
 
 Expr *newVarAssignment(int line, Expr *identifier, Expr *value) {

@@ -35,6 +35,8 @@ static Keyword keywords[] = {
     {"elsif", 5, ELSIF},
     {"else", 4, ELSE},
     {"end", 3, END},
+    {"while", 5, WHILE},
+    {"for", 3, FOR},
     // sentinel
     {NULL, 0, END_OF_FILE}
 };
