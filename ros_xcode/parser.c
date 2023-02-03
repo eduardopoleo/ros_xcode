@@ -16,7 +16,7 @@ StmtArray *parse(Scanner *scanner) {
     Stmt *stmt;
     while(!atEnd(scanner)) {
         stmt = statement(scanner);
-        writeStmtArray(array, stmt);
+        ADD_ARRAY_ELEMENT(array, stmt, Stmt);
     }
 
     return array;
@@ -144,23 +144,23 @@ Stmt *parseIf(Scanner *scanner) {
 
     while(!match(scanner, END)) {
         if (match(scanner, ELSIF)) {
-            writeConditionalArray(conditionals, conditional);
+            ADD_ARRAY_ELEMENT(conditionals, conditional, Conditional);
             conditional = newConditional();
             conditional->condition = expression(scanner);
         }
 
         if (match(scanner, ELSE)) {
-            writeConditionalArray(conditionals, conditional);
+            ADD_ARRAY_ELEMENT(conditionals, conditional, Conditional);
             conditional = newConditional();
             conditional->condition = newBooleanExpr(scanner->peek_prev, true);
         }
 
         Stmt *stmt = statement(scanner);
 
-        writeStmtArray(conditional->statements, stmt);
+        ADD_ARRAY_ELEMENT(conditional->statements, stmt, Stmt);
     }
     
-    writeConditionalArray(conditionals, conditional);
+    ADD_ARRAY_ELEMENT(conditionals, conditional, Conditional);
     
     Stmt *ifStmt = newStmt(scanner->line, IF_STMT);
     ifStmt->as.ifStmt.conditionals = conditionals;
@@ -264,70 +264,15 @@ void freeExpression(Expr *exp) {
   }
 }
 
-// Dry this up into an Array module.
-////////////// STMT ARRAY ////////////////////
 StmtArray *initStmtArray(void) {
     StmtArray *array = malloc(sizeof(StmtArray));
-
-    array->list = NULL;
-    array->capacity = 0;
-    array->size = 0;
-
+    INIT_ARRAY(array, typeStmtArray);
     return array;
 }
 
-void writeStmtArray(StmtArray *array, Stmt *stmt) {
-    if (array->size + 1 > array->capacity) {
-        int newCapacity = growStmtCapacity(array->capacity);
-        array->list = growStmtArray(array, newCapacity);
-        array->capacity = newCapacity;
-    }
-
-    array->list[array->size] = stmt;
-    array->size++;
-}
-
-int growStmtCapacity(int capacity) {
-    if (capacity < 8) {
-        return 8;
-    } else {
-        return 2 * capacity;
-    }
-}
-
-Stmt **growStmtArray(StmtArray *array, int newCapacity) {
-    return (Stmt**)realloc(array->list, newCapacity * sizeof(Stmt));
-}
-//////////////////////////////////////////////
 ConditionalArray *initConditionalArray(void) {
     ConditionalArray *array = malloc(sizeof(ConditionalArray));
-
-    array->list = NULL;
-    array->capacity = 0;
-    array->size = 0;
+    INIT_ARRAY(array, ConditionalArray);
 
     return array;
-}
-
-void writeConditionalArray(ConditionalArray *array, Conditional *conditional) {
-    if (array->size + 1 > array->capacity) {
-        int newCapacity = growConditionalCapacity(array->capacity);
-        array->list = growConditionalArray(array, newCapacity);
-        array->capacity = newCapacity;
-    }
-
-    array->list[array->size] = conditional;
-    array->size++;
-}
-
-int growConditionalCapacity(int capacity) {
-    if (capacity < 8) {
-        return 8;
-    } else {
-        return 2 * capacity;
-    }
-}
-//
-Conditional **growConditionalArray(ConditionalArray *array, int newCapacity) {
-    return (Conditional**)realloc(array->list, newCapacity * sizeof(Conditional));
 }

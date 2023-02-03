@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include "scanner.h"
 #include "token.h"
+#include "array.h"
 
 typedef enum ExprType {
     BINARY,
@@ -103,14 +104,7 @@ typedef struct ConditionalArray {
 
 
 StmtArray *initStmtArray(void);
-void writeStmtArray(StmtArray *array, Stmt *stmt);
-int growStmtCapacity(int capacity);
-Stmt **growStmtArray(StmtArray *array, int newCapacity);
-
 ConditionalArray *initConditionalArray(void);
-void writeConditionalArray(ConditionalArray *array, Conditional *conditional);
-int growConditionalCapacity(int capacity);
-Conditional **growConditionalArray(ConditionalArray *array, int newCapacity);
 
 StmtArray *parse(Scanner *scanner);
 Stmt *statement(Scanner *scanner);
