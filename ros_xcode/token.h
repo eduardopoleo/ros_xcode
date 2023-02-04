@@ -37,6 +37,8 @@ typedef enum TokenType {
     END,
     WHILE,
     FOR,
+    IN,
+    DOT,
     EMPTY_TOKEN
 } TokenType;
 

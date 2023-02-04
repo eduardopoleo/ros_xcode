@@ -62,7 +62,8 @@ typedef enum StmtType {
     PUTS_STMT,
     EXPR_STMT,
     IF_STMT,
-    WHILE_STMT
+    WHILE_STMT,
+    FOR_STMT
 } StmtType;
 
 
@@ -117,6 +118,7 @@ Stmt *statement(Scanner *scanner);
 Stmt *parsePuts(Scanner *scanner);
 Stmt *parseIf(Scanner *scanner);
 Stmt *parseWhile(Scanner *scanner);
+Stmt *newStmt(int line, StmtType type);
 
 Expr *expression(Scanner *scanner);
 Expr *assignment(Scanner *scanner);
@@ -125,9 +127,8 @@ Expr *comparison(Scanner *scanner);
 Expr *term(Scanner *scanner);
 Expr *factor(Scanner *scanner);
 Expr *primary(Scanner *scanner);
-
-Stmt *newStmt(int line, StmtType type);
 Expr *newExpr(int line, ExprType type);
+
 Conditional *newConditional(void);
 Expr *newBinary(Expr *left, Expr *right, TokenType op, int line);
 Expr *newBooleanExpr(Token token, bool value);

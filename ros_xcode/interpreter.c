@@ -29,6 +29,9 @@ void execute(Stmt *stmt, HashTable *env) {
         case WHILE_STMT:
             visitWhile(stmt, env);
             break;
+        case FOR_STMT:
+            visitFor(stmt, env);
+            break;
         case EXPR_STMT:
             evaluate(stmt->exprStmt, env);
             break;
@@ -83,6 +86,13 @@ void visitWhile(Stmt *stmt, HashTable *env) {
             execute(statement, env);
         }
     }
+}
+
+void visitFor(Stmt *stmt, HashTable *env) {
+    /*
+        Evaluate range -> []
+        
+     */
 }
 
 Object *visitVarAssignment(Expr *exp, HashTable *env) {

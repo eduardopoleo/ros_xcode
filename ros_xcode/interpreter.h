@@ -17,6 +17,7 @@ void execute(Stmt *stmt, HashTable *env);
 void visitPuts(Stmt *stmt, HashTable *env);
 void visitIf(Stmt *stmt, HashTable *env);
 void visitWhile(Stmt *stmt, HashTable *env);
+void visitFor(Stmt *stmt, HashTable *env);
 
 Object *visitVarAssignment(Expr *exp, HashTable *env);
 Object *evaluate(Expr *exp, HashTable *env);
