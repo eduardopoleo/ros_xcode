@@ -266,6 +266,16 @@ bool isAlpha(char c) {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
 
+void consume(Scanner *scanner, TokenType type) {
+    if (scanner->peek.type == type) {
+        advanceToken(scanner);
+        return;
+    }
+
+    printf("Expected token of type %d not found", type);
+    exit(1);
+}
+
 bool match(Scanner *scanner, TokenType type) {
     if (scanner->peek.type == type) {
         advanceToken(scanner);

@@ -18,6 +18,7 @@ StmtArray *parse(Scanner *scanner) {
     Stmt *stmt;
     while(!atEnd(scanner)) {
         stmt = statement(scanner);
+        
         ADD_ARRAY_ELEMENT(array, stmt, Stmt);
     }
 
@@ -35,6 +36,10 @@ Stmt *statement(Scanner *scanner) {
     
     if (match(scanner, WHILE)) {
         return parseWhile(scanner);
+    }
+    
+    if (match(scanner, FOR)) {
+        return parseFor(scanner);
     }
 
     Stmt *stmt = newStmt(scanner->line, EXPR_STMT);
@@ -199,6 +204,25 @@ Stmt *parseWhile(Scanner *scanner) {
     whileStmt->as.whileStmt.statements = statements;
 
     return whileStmt;
+}
+
+Stmt *parseFor(Scanner *scanner) {
+    Stmt *forStmt = newStmt(scanner->line, FOR_STMT);
+    // This is a bit of hack. The identifier is a varexpression
+    // but in reality we'll use it as var assignment in the interpreter
+    forStmt->as.forStmt.identifier = expression(scanner);
+    consume(scanner, IN);
+    forStmt->as.forStmt.range = expression(scanner);
+
+    StmtArray *statements = initStmtArray();
+    Stmt *stmt;
+    while(!match(scanner, END)) {
+        stmt = statement(scanner);
+        ADD_ARRAY_ELEMENT(statements, stmt, Stmt);
+    }
+
+    forStmt->as.forStmt.statements = statements;
+    return forStmt;
 }
 
 Expr *newVarAssignment(int line, Expr *identifier, Expr *value) {

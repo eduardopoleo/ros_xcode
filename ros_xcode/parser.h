@@ -90,6 +90,12 @@ typedef struct Stmt {
             Expr *condition;
             struct StmtArray *statements;
         } whileStmt;
+        
+        struct {
+            Expr *identifier;
+            Expr *range;
+            struct StmtArray *statements;
+        } forStmt;
 
         struct {
             int length;
@@ -126,6 +132,7 @@ Stmt *parsePuts(Scanner *scanner);
 Stmt *parseIf(Scanner *scanner);
 Stmt *parseWhile(Scanner *scanner);
 Stmt *newStmt(int line, StmtType type);
+Stmt *parseFor(Scanner *scanner);
 
 Expr *expression(Scanner *scanner);
 Expr *assignment(Scanner *scanner);

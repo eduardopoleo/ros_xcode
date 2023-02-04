@@ -89,10 +89,22 @@ void visitWhile(Stmt *stmt, HashTable *env) {
 }
 
 void visitFor(Stmt *stmt, HashTable *env) {
-    /*
-        Evaluate range -> []
-        
-     */
+    Expr *range = stmt->as.forStmt.range;
+    double end = strcmp(range->as.range.type, "inclusive") == 0 ? range->as.range.end + 1 : range->as.range.end;
+    
+    char *name = stmt->as.forStmt.identifier->as.varExp.string;
+    int length = stmt->as.forStmt.identifier->as.varExp.length;
+    Object *object = initObject(NUMBER_OBJ);
+    Stmt *statement;
+    for(int i = range->as.range.start; i < end; i++) {
+        object->as.number.value = i;
+        insertEntry(env, name, length, object);
+
+        for(int j = 0; j < stmt->as.forStmt.statements->size; j++) {
+            statement = stmt->as.forStmt.statements->list[j];
+            execute(statement, env);
+        }
+    }
 }
 
 Object *visitVarAssignment(Expr *exp, HashTable *env) {

@@ -1,1 +1,5 @@
-100..4000
+for i in 0..5
+  puts i
+end
+
+# inclusive range, exclusive range
