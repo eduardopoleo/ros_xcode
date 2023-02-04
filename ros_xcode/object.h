@@ -15,7 +15,8 @@
 typedef enum ObjectType {
     NUMBER_OBJ,
     STRING_OBJ,
-    BOOLEAN_OBJ
+    BOOLEAN_OBJ,
+    RANGE_OBJ
 } ObjectType;
 
 typedef struct Object {
@@ -29,10 +30,17 @@ typedef struct Object {
             int length;
             char *value;
         } string;
-        
+
         struct {
             bool value;
         } boolean;
+
+        struct {
+            char *type;
+            int start;
+            int end;
+        } range;
+
     } as;
 } Object;
 

@@ -169,10 +169,37 @@ Token calculateToken(Scanner *scanner) {
             token = newToken(IDENTIFIER, scanner->line, length, scanner->start);
         }
     }
-
+    
     if(isNumber(scanner->start[0])) {
-        captureFullNumber(scanner);
-        int length = (int)(scanner->current - scanner->start);
+        int length;
+
+        while(isNumber(scanner->current[0])) {
+            scanner->current++;
+        }
+        
+//      We have a ruby range.
+        if (scanner->current[0] == '.' && scanner->current[1]  == '.') {
+            scanner->current++;
+            scanner->current++;
+            TokenType type = INCLUSIVE_RANGE;
+
+            if (scanner->current[0] == '.') {
+                scanner->current++;
+                type = EXCLUSIVE_RANGE;
+            }
+            length = (int)(scanner->current - scanner->start);
+            return newToken(type, scanner->line, length, scanner->start);
+        }
+        
+        if (scanner->current[0] == '.') {
+            scanner->current++;
+//          we resolve the decimal part of the number
+            while(isNumber(scanner->current[0])) {
+                scanner->current++;
+            }
+        }
+
+        length = (int)(scanner->current - scanner->start);
         token = newToken(NUMBER, scanner->line, length, scanner->start);
     }
 
@@ -191,17 +218,6 @@ void captureFullIdentifier(Scanner *scanner) {
     while(isAllowedIdentifier(scanner->current[0])) {
         scanner->current++;
     }
-}
-
-void captureFullNumber(Scanner *scanner) {
-    // Current could be a . if we have 1 digit e.g 1.5
-    while(isNumber(scanner->current[0]) || scanner->current[0] == '.') {
-        scanner->current++;
-        // If we land into a . we can to keep iterating to gather all the decimal points
-        if(scanner->current[0] == '.') {
-            scanner->current++;
-        }
-  }
 }
 
 void captureFullString(Scanner *scanner) {

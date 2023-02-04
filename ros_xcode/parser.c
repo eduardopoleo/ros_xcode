@@ -7,8 +7,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "scanner.h"
 #include "parser.h"
+
 
 StmtArray *parse(Scanner *scanner) {
     StmtArray *array = initStmtArray();
@@ -127,12 +129,22 @@ Expr *primary(Scanner *scanner) {
             break;
         case IDENTIFIER:
             exp = newVarExpression(token);
+            break;
+        case INCLUSIVE_RANGE:
+            exp = newRangeExpression(token);
+            break;
+        case EXCLUSIVE_RANGE:
+            exp = newRangeExpression(token);
+            break;
     }
 
   return exp;
 }
 
-// Supporting functions: Should go into another file
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
 Stmt *parsePuts(Scanner *scanner) {
     Expr *exp = expression(scanner);
     Stmt *stmt = newStmt(scanner->line, PUTS_STMT);
@@ -230,6 +242,24 @@ Expr *newStringLiteral(Token *token) {
     Expr *exp = newExpr(token->line, STRING_LITERAL);
     exp->as.stringLiteral.string = token->lexeme;
     exp->as.stringLiteral.length = token->length;
+    return exp;
+}
+
+Expr *newRangeExpression(Token token) {
+    Expr *exp = newExpr(token.line, RANGE);
+    char *type = token.type == INCLUSIVE_RANGE ? "inclusive" : "exclusive";
+    exp->as.range.type = type;
+    
+    int start, startSize, dotsSize, end;
+
+    start = (int)strtod(token.lexeme, NULL);
+    startSize = (start == 0) ? 1 : (log10(start) + 1);
+    // 2 or 3 dots.
+    dotsSize = token.type == INCLUSIVE_RANGE ? 2 : 3;
+    end = (int)strtod(token.lexeme + startSize + dotsSize, NULL);
+    exp->as.range.start = start;
+    exp->as.range.end = end;
+
     return exp;
 }
 

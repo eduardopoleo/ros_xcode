@@ -24,6 +24,7 @@ Object *evaluate(Expr *exp, HashTable *env);
 Object *visitStringLiteral(Expr *exp);
 Object *visitNumberLiteral(Expr *exp);
 Object *visitBoolean(Expr *exp);
+Object *visitRange(Expr *exp);
 Object *visitBinary(Expr *exp, HashTable *env);
 Object *visitVarExpression(Expr *exp, HashTable *env);
 

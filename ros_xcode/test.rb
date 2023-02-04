@@ -5,6 +5,7 @@ while i < 5
   i = i + 1
 end
 
-for i in 0..5
-  puts "Value of local variable is #{i}"
-end
+# for i in 0..5
+#   puts "Value of local variable is #{i}"
+# end
+

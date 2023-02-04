@@ -38,7 +38,8 @@ typedef enum TokenType {
     WHILE,
     FOR,
     IN,
-    DOT,
+    INCLUSIVE_RANGE,
+    EXCLUSIVE_RANGE,
     EMPTY_TOKEN
 } TokenType;
 

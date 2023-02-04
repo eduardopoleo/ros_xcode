@@ -111,6 +111,8 @@ Object *evaluate(Expr *exp, HashTable *env) {
             return visitStringLiteral(exp);
         case BOOLEAN:
             return visitBoolean(exp);
+        case RANGE:
+            return visitRange(exp);
         case VAR_EXP:
             return visitVarExpression(exp, env);
         case VAR_ASSIGNMENT:
@@ -134,6 +136,14 @@ Object *visitNumberLiteral(Expr *exp) {
 Object *visitBoolean(Expr *exp) {
     Object *object = initObject(BOOLEAN_OBJ);
     object->as.boolean.value = exp->as.boolExp.value;
+    return object;
+}
+
+Object *visitRange(Expr *exp) {
+    Object *object = initObject(RANGE_OBJ);
+    object->as.range.type = exp->as.range.type;
+    object->as.range.start  = exp->as.range.start;
+    object->as.range.start  = exp->as.range.end;
     return object;
 }
 

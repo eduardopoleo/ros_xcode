@@ -19,7 +19,8 @@ typedef enum ExprType {
     STRING_LITERAL,
     BOOLEAN,
     VAR_EXP,
-    VAR_ASSIGNMENT
+    VAR_ASSIGNMENT,
+    RANGE
 } ExprType;
 
 typedef struct Expr {
@@ -40,16 +41,22 @@ typedef struct Expr {
             char *string;
             int length;
         } stringLiteral;
-        
+
         struct {
             char *string;
             int length;
         } varExp;
-        
+
         struct {
             bool value;
         } boolExp;
-        
+
+        struct {
+            char *type;
+            int start;
+            int end;
+        } range;
+
         struct {
             char *name;
             int length;
@@ -136,6 +143,7 @@ Expr *newNumberLiteral(Token *token);
 Expr *newStringLiteral(Token *token);
 Expr *newVarExpression(Token token);
 Expr *newVarAssignment(int line, Expr *identifier, Expr *value);
+Expr *newRangeExpression(Token token);
 
 void freeStatements(StmtArray *array);
 void freeStatement(Stmt *stmt);
