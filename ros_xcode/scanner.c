@@ -171,36 +171,7 @@ Token calculateToken(Scanner *scanner) {
     }
     
     if(isNumber(scanner->start[0])) {
-        int length;
-
-        while(isNumber(scanner->current[0])) {
-            scanner->current++;
-        }
-        
-//      We have a ruby range.
-        if (scanner->current[0] == '.' && scanner->current[1]  == '.') {
-            scanner->current++;
-            scanner->current++;
-            TokenType type = INCLUSIVE_RANGE;
-
-            if (scanner->current[0] == '.') {
-                scanner->current++;
-                type = EXCLUSIVE_RANGE;
-            }
-            length = (int)(scanner->current - scanner->start);
-            return newToken(type, scanner->line, length, scanner->start);
-        }
-        
-        if (scanner->current[0] == '.') {
-            scanner->current++;
-//          we resolve the decimal part of the number
-            while(isNumber(scanner->current[0])) {
-                scanner->current++;
-            }
-        }
-
-        length = (int)(scanner->current - scanner->start);
-        token = newToken(NUMBER, scanner->line, length, scanner->start);
+        token = handleNumberOrRange(scanner);
     }
 
     if (!atEnd(scanner)) {
@@ -226,6 +197,45 @@ void captureFullString(Scanner *scanner) {
     }
     // Moves past the "
     scanner->current++;
+}
+
+Token handleNumberOrRange(Scanner *scanner) {
+    int length;
+    
+    while(isNumber(scanner->current[0])) {
+        scanner->current++;
+    }
+
+//      We have a ruby range.
+    if (scanner->current[0] == '.' && scanner->current[1]  == '.') {
+        scanner->current++;
+        scanner->current++;
+        TokenType type = INCLUSIVE_RANGE;
+
+        if (scanner->current[0] == '.') {
+            scanner->current++;
+            type = EXCLUSIVE_RANGE;
+        }
+        
+//        We need to resolve the second part of the range
+        while(isNumber(scanner->current[0])) {
+            scanner->current++;
+        }
+
+        length = (int)(scanner->current - scanner->start);
+        return newToken(type, scanner->line, length, scanner->start);
+    }
+
+    if (scanner->current[0] == '.') {
+        scanner->current++;
+//          we resolve the decimal part of the number
+        while(isNumber(scanner->current[0])) {
+            scanner->current++;
+        }
+    }
+
+    length = (int)(scanner->current - scanner->start);
+    return newToken(NUMBER, scanner->line, length, scanner->start);
 }
 
 bool isNewLine(char c) {

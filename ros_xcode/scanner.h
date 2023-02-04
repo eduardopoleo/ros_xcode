@@ -58,6 +58,7 @@ bool isAllowedIdentifier(char c);
 void captureFullIdentifier(Scanner *scanner);
 void captureFullNumber(Scanner *scanner);
 void captureFullString(Scanner *scanner);
+Token handleNumberOrRange(Scanner *scanner);
 void printIdentifier(char *identifier, int lenght);
 
 #endif /* scanner_h */

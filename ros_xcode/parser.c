@@ -252,11 +252,11 @@ Expr *newRangeExpression(Token token) {
     
     int start, startSize, dotsSize, end;
 
-    start = (int)strtod(token.lexeme, NULL);
+    start = strtod(token.lexeme, NULL);
     startSize = (start == 0) ? 1 : (log10(start) + 1);
     // 2 or 3 dots.
     dotsSize = token.type == INCLUSIVE_RANGE ? 2 : 3;
-    end = (int)strtod(token.lexeme + startSize + dotsSize, NULL);
+    end = strtod(token.lexeme + startSize + dotsSize, NULL);
     exp->as.range.start = start;
     exp->as.range.end = end;
 

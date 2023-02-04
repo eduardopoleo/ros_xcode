@@ -37,8 +37,8 @@ typedef struct Object {
 
         struct {
             char *type;
-            int start;
-            int end;
+            double start;
+            double end;
         } range;
 
     } as;

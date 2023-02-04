@@ -53,8 +53,8 @@ typedef struct Expr {
 
         struct {
             char *type;
-            int start;
-            int end;
+            double start;
+            double end;
         } range;
 
         struct {

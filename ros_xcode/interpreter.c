@@ -141,9 +141,9 @@ Object *visitBoolean(Expr *exp) {
 
 Object *visitRange(Expr *exp) {
     Object *object = initObject(RANGE_OBJ);
-    object->as.range.type = exp->as.range.type;
+    object->as.range.type   = exp->as.range.type;
     object->as.range.start  = exp->as.range.start;
-    object->as.range.start  = exp->as.range.end;
+    object->as.range.end  = exp->as.range.end;
     return object;
 }
 

@@ -7,32 +7,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "5C595AC1-3CF2-4966-B61F-0FB7E8B167B1"
-            shouldBeEnabled = "No"
+            uuid = "75808577-9802-44F0-8834-B9BF7E69A216"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ros_xcode/interpreter.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "105"
-            endingLineNumber = "105"
-            landmarkName = "evaluate(exp, env)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "CFA5A8BB-D646-4F25-853E-0880207852D8"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ros_xcode/parser.c"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "140"
-            endingLineNumber = "140"
-            landmarkName = "primary(scanner)"
+            startingLineNumber = "37"
+            endingLineNumber = "37"
+            landmarkName = "execute(stmt, env)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
