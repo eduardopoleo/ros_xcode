@@ -4,4 +4,3 @@ def sum(a, b)
   puts "Let's make this bigger"
   5 + 6
 end
-

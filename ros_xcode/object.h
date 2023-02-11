@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "hash_table.h"
 
 typedef enum ObjectType {
     NUMBER_OBJ,
@@ -41,9 +42,13 @@ typedef struct Object {
             double start;
             double end;
         } range;
-        
+
         struct {
-            struct Stmt *method;
+            char *name;
+            int nameLength;
+            struct ExprArray *arguments;
+            struct StmtArray *statements;
+            struct HashTable *env;
         } method;
 
     } as;

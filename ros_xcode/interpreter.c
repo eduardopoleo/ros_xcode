@@ -112,7 +112,15 @@ void visitFor(Stmt *stmt, HashTable *env) {
 
 void visitDef(Stmt *stmt, HashTable *env) {
     Object *object = initObject(METHOD_OBJ);
-    object->as.method.method = stmt;
+    HashTable *defEnv = initHashTable();
+
+    object->as.method.name = stmt->as.defStmt.name->as.varExp.string;
+    object->as.method.nameLength = stmt->as.defStmt.name->as.varExp.length;
+    object->as.method.arguments = stmt->as.defStmt.arguments;
+    object->as.method.statements = stmt->as.defStmt.statements;
+    object->as.method.env = defEnv;
+
+    insertEntry(env, object->as.method.name,  object->as.method.nameLength, object);
 }
 
 Object *visitVarAssignment(Expr *exp, HashTable *env) {
