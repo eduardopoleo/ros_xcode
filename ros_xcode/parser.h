@@ -70,7 +70,8 @@ typedef enum StmtType {
     EXPR_STMT,
     IF_STMT,
     WHILE_STMT,
-    FOR_STMT
+    FOR_STMT,
+    DEF_STMT
 } StmtType;
 
 
@@ -98,6 +99,12 @@ typedef struct Stmt {
         } forStmt;
 
         struct {
+            Expr *name;
+            struct ExprArray *arguments;
+            struct StmtArray *statements;
+        } defStmt;
+
+        struct {
             int length;
             char *identifier;
         } varAssignment;
@@ -110,6 +117,12 @@ typedef struct StmtArray {
     int size;
     int capacity;
 }   StmtArray;
+
+typedef struct ExprArray {
+    Expr **list;
+    int size;
+    int capacity;
+} ExprArray;
 
 typedef struct Conditional {
     Expr *condition;
@@ -124,6 +137,7 @@ typedef struct ConditionalArray {
 
 
 StmtArray *initStmtArray(void);
+ExprArray *initExprArray(void);
 ConditionalArray *initConditionalArray(void);
 
 StmtArray *parse(Scanner *scanner);
@@ -133,6 +147,7 @@ Stmt *parseIf(Scanner *scanner);
 Stmt *parseWhile(Scanner *scanner);
 Stmt *newStmt(int line, StmtType type);
 Stmt *parseFor(Scanner *scanner);
+Stmt *parseDef(Scanner *scanner);
 
 Expr *expression(Scanner *scanner);
 Expr *assignment(Scanner *scanner);

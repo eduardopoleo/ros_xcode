@@ -39,6 +39,11 @@ typedef enum TokenType {
     FOR,
     IN,
     INCLUSIVE_RANGE,
+    DEF,
+    LEFT_PAREN,
+    RIGHT_PAREN,
+    COMMA,
+    RETURN,
     EXCLUSIVE_RANGE,
     EMPTY_TOKEN
 } TokenType;

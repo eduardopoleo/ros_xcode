@@ -18,7 +18,6 @@ StmtArray *parse(Scanner *scanner) {
     Stmt *stmt;
     while(!atEnd(scanner)) {
         stmt = statement(scanner);
-        
         ADD_ARRAY_ELEMENT(array, stmt, Stmt);
     }
 
@@ -40,6 +39,10 @@ Stmt *statement(Scanner *scanner) {
     
     if (match(scanner, FOR)) {
         return parseFor(scanner);
+    }
+    
+    if (match(scanner, DEF)) {
+        return parseDef(scanner);
     }
 
     Stmt *stmt = newStmt(scanner->line, EXPR_STMT);
@@ -225,6 +228,36 @@ Stmt *parseFor(Scanner *scanner) {
     return forStmt;
 }
 
+// method definition.
+Stmt *parseDef(Scanner *scanner) {
+    Stmt *defStmt = newStmt(scanner->line, DEF_STMT);
+    defStmt->as.defStmt.name = expression(scanner);
+    ExprArray *arguments = initExprArray();
+
+    if (match(scanner, LEFT_PAREN)) {
+        Expr *exp;
+        
+        while(!match(scanner, RIGHT_PAREN)) {
+            exp = expression(scanner);
+            ADD_ARRAY_ELEMENT(arguments, exp, Expr);
+            match(scanner, COMMA);
+        }
+    }
+    defStmt->as.defStmt.arguments = arguments;
+
+    StmtArray *statements = initStmtArray();
+    Stmt *stmt;
+
+    while(!match(scanner, END)) {
+        stmt = statement(scanner);
+        ADD_ARRAY_ELEMENT(statements, stmt, Stmt);
+    }
+
+    defStmt->as.defStmt.statements = statements;
+
+    return defStmt;
+}
+
 Expr *newVarAssignment(int line, Expr *identifier, Expr *value) {
     Expr *exp = newExpr(line, VAR_ASSIGNMENT);
     exp->as.varAssignment.name = identifier->as.varExp.string;
@@ -342,7 +375,15 @@ void freeExpression(Expr *exp) {
 
 StmtArray *initStmtArray(void) {
     StmtArray *array = malloc(sizeof(StmtArray));
-    INIT_ARRAY(array, typeStmtArray);
+    INIT_ARRAY(array, StmtArray);
+
+    return array;
+}
+
+ExprArray *initExprArray(void) {
+    ExprArray *array = malloc(sizeof(ExprArray));
+    INIT_ARRAY(array, ExprArray)
+
     return array;
 }
 

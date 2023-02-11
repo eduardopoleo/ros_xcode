@@ -38,6 +38,8 @@ static Keyword keywords[] = {
     {"while", 5, WHILE},
     {"for", 3, FOR},
     {"in", 2, IN},
+    {"def", 3, DEF},
+    {"return", 6, RETURN},
     // sentinel
     {NULL, 0, END_OF_FILE}
 };

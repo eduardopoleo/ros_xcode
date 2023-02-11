@@ -32,6 +32,9 @@ void execute(Stmt *stmt, HashTable *env) {
         case FOR_STMT:
             visitFor(stmt, env);
             break;
+        case DEF_STMT:
+            visitDef(stmt, env);
+            break;
         case EXPR_STMT:
             evaluate(stmt->exprStmt, env);
             break;
@@ -105,6 +108,11 @@ void visitFor(Stmt *stmt, HashTable *env) {
             execute(statement, env);
         }
     }
+}
+
+void visitDef(Stmt *stmt, HashTable *env) {
+    Object *object = initObject(METHOD_OBJ);
+    object->as.method.method = stmt;
 }
 
 Object *visitVarAssignment(Expr *exp, HashTable *env) {

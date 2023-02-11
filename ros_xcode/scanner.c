@@ -106,6 +106,15 @@ Token calculateToken(Scanner *scanner) {
         case '%':
             token = newToken(MODULO, scanner->line, 1, scanner->start);
             break;
+        case '(':
+            token = newToken(LEFT_PAREN, scanner->line, 1, scanner->start);
+            break;
+        case ')':
+            token = newToken(RIGHT_PAREN, scanner->line, 1, scanner->start);
+            break;
+        case ',':
+            token = newToken(COMMA, scanner->line, 1, scanner->start);
+            break;
         case '=':
             if (scanner->current[0] == '=') {
                 token = newToken(EQUAL_EQUAL, scanner->line, 1, scanner->start);

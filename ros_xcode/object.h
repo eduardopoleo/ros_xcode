@@ -16,7 +16,8 @@ typedef enum ObjectType {
     NUMBER_OBJ,
     STRING_OBJ,
     BOOLEAN_OBJ,
-    RANGE_OBJ
+    RANGE_OBJ,
+    METHOD_OBJ
 } ObjectType;
 
 typedef struct Object {
@@ -40,6 +41,10 @@ typedef struct Object {
             double start;
             double end;
         } range;
+        
+        struct {
+            struct Stmt *method;
+        } method;
 
     } as;
 } Object;
