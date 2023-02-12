@@ -18,7 +18,8 @@ typedef enum ExprType {
     NUMBER_LITERAL,
     STRING_LITERAL,
     BOOLEAN,
-    VAR_EXP,
+    IDENTIFIER_EXP,
+    METHOD_CALL_EXP,
     VAR_ASSIGNMENT,
     RANGE
 } ExprType;
@@ -45,7 +46,17 @@ typedef struct Expr {
         struct {
             char *string;
             int length;
-        } varExp;
+        } identifierExp;
+        
+        /*
+            - indentifierExp will resolve method calls with no arguments: my_method
+            - methodCall will resolve method calls with arg and parens:   my_method(...)
+         */
+        struct {
+            char *name;
+            int length;
+            struct ExprArray *arguments;
+        } methodCall;
 
         struct {
             bool value;
@@ -99,7 +110,8 @@ typedef struct Stmt {
         } forStmt;
 
         struct {
-            Expr *name;
+            char *name;
+            int nameLength;
             struct ExprArray *arguments;
             struct StmtArray *statements;
         } defStmt;
@@ -163,9 +175,11 @@ Expr *newBinary(Expr *left, Expr *right, TokenType op, int line);
 Expr *newBooleanExpr(Token token, bool value);
 Expr *newNumberLiteral(Token *token);
 Expr *newStringLiteral(Token *token);
-Expr *newVarExpression(Token token);
 Expr *newVarAssignment(int line, Expr *identifier, Expr *value);
 Expr *newRangeExpression(Token token);
+Expr *newMethodCallExpression(Scanner *scanner, Token token);
+Expr *newIdentifierExpression(Token token);
+Expr *handleIdenfierExpression(Scanner *scanner, Token token);
 
 void freeStatements(StmtArray *array);
 void freeStatement(Stmt *stmt);

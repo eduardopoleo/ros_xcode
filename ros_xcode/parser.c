@@ -122,7 +122,7 @@ Expr *primary(Scanner *scanner) {
     Token token = advanceToken(scanner);
     Expr *exp;
 //    printf("got to primary with type %d\n", token.type);
-    switch (token.type){
+    switch (token.type) {
         case STRING:
             exp = newStringLiteral(&token);
             break;
@@ -136,7 +136,7 @@ Expr *primary(Scanner *scanner) {
             exp = newBooleanExpr(token, false);
             break;
         case IDENTIFIER:
-            exp = newVarExpression(token);
+            exp = handleIdenfierExpression(scanner, token);
             break;
         case INCLUSIVE_RANGE:
             exp = newRangeExpression(token);
@@ -231,7 +231,11 @@ Stmt *parseFor(Scanner *scanner) {
 // method definition.
 Stmt *parseDef(Scanner *scanner) {
     Stmt *defStmt = newStmt(scanner->line, DEF_STMT);
-    defStmt->as.defStmt.name = expression(scanner);
+    Token identifier = consume(scanner, IDENTIFIER);
+    
+    defStmt->as.defStmt.name = identifier.lexeme;
+    defStmt->as.defStmt.nameLength = identifier.length;
+
     ExprArray *arguments = initExprArray();
 
     if (match(scanner, LEFT_PAREN)) {
@@ -260,8 +264,8 @@ Stmt *parseDef(Scanner *scanner) {
 
 Expr *newVarAssignment(int line, Expr *identifier, Expr *value) {
     Expr *exp = newExpr(line, VAR_ASSIGNMENT);
-    exp->as.varAssignment.name = identifier->as.varExp.string;
-    exp->as.varAssignment.length = identifier->as.varExp.length;
+    exp->as.varAssignment.name = identifier->as.identifierExp.string;
+    exp->as.varAssignment.length = identifier->as.identifierExp.length;
     exp->as.varAssignment.value = value;
     return exp;
 }
@@ -272,10 +276,35 @@ Expr *newBooleanExpr(Token token, bool value) {
     return exp;
 }
 
-Expr *newVarExpression(Token token) {
-    Expr *exp = newExpr(token.line, VAR_EXP);
-    exp->as.varExp.length = token.length;
-    exp->as.varExp.string = token.lexeme;
+Expr *handleIdenfierExpression(Scanner *scanner, Token token) {
+    if (match(scanner, LEFT_PAREN)) {
+        return newMethodCallExpression(scanner, token);
+    } else {
+        return newIdentifierExpression(token);
+    }
+}
+
+Expr *newMethodCallExpression(Scanner *scanner, Token token) {
+    Expr *exp = newExpr(token.line, METHOD_CALL_EXP);
+    exp->as.methodCall.name = token.lexeme;
+    exp->as.methodCall.length = token.length;
+    ExprArray *arguments = initExprArray();
+
+    Expr *argumentExp;
+    while(!match(scanner, RIGHT_PAREN)) {
+        argumentExp = expression(scanner);
+        ADD_ARRAY_ELEMENT(arguments, argumentExp, Expr);
+        match(scanner, COMMA);
+    }
+
+    exp->as.methodCall.arguments = arguments;
+    return exp;
+}
+
+Expr *newIdentifierExpression(Token token) {
+    Expr *exp = newExpr(token.line, IDENTIFIER_EXP);
+    exp->as.identifierExp.length = token.length;
+    exp->as.identifierExp.string = token.lexeme;
     
     return exp;
 }

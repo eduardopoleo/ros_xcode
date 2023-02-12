@@ -54,7 +54,7 @@ Token rewindToken(Scanner *scanner);
 Token calculateToken(Scanner *scanner);
 bool atEnd(Scanner *scanner);
 bool match(Scanner *scanner, TokenType type);
-void consume(Scanner *scanner, TokenType type);
+Token consume(Scanner *scanner, TokenType type);
 bool isNumber(char c);
 bool isAlpha(char c);
 bool isAllowedIdentifier(char c);

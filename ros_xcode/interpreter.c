@@ -18,30 +18,34 @@ void interpret(StmtArray *array, HashTable *env) {
     }
 }
 
-void execute(Stmt *stmt, HashTable *env) {
+Object *execute(Stmt *stmt, HashTable *env) {
+    Object *object = initObject(NIL_OBJECT);
+
     switch (stmt->type) {
         case PUTS_STMT:
-            visitPuts(stmt, env);
+            object = visitPuts(stmt, env);
             break;
         case IF_STMT:
-            visitIf(stmt, env);
+            object =visitIf(stmt, env);
             break;
         case WHILE_STMT:
-            visitWhile(stmt, env);
+            object =visitWhile(stmt, env);
             break;
         case FOR_STMT:
-            visitFor(stmt, env);
+            object =visitFor(stmt, env);
             break;
         case DEF_STMT:
-            visitDef(stmt, env);
+            object = visitDef(stmt, env);
             break;
         case EXPR_STMT:
-            evaluate(stmt->exprStmt, env);
+            object = evaluate(stmt->exprStmt, env);
             break;
     }
+
+    return object;
 }
 
-void visitPuts(Stmt *stmt, HashTable *env) {
+Object *visitPuts(Stmt *stmt, HashTable *env) {
     Object *object = evaluate(stmt->as.puts.exp, env);
     switch (object->type) {
         case NUMBER_OBJ:
@@ -60,10 +64,15 @@ void visitPuts(Stmt *stmt, HashTable *env) {
                 printf("false\n");
             }
             break;
+        case NIL_OBJECT:
+            printf("nil\n");
+            break;
     }
+    
+    return initObject(NIL_OBJECT);
 }
 
-void visitIf(Stmt *stmt, HashTable *env) {
+Object *visitIf(Stmt *stmt, HashTable *env) {
     int count = stmt->as.ifStmt.conditionals->size;
     
     for(int i = 0; i < count; i++) {
@@ -78,9 +87,11 @@ void visitIf(Stmt *stmt, HashTable *env) {
             break;
         }
     }
+
+    return initObject(NIL_OBJECT);
 }
 
-void visitWhile(Stmt *stmt, HashTable *env) {
+Object *visitWhile(Stmt *stmt, HashTable *env) {
     while (evaluate(stmt->as.whileStmt.condition, env)->as.boolean.value) {
         Stmt *statement;
 
@@ -89,14 +100,16 @@ void visitWhile(Stmt *stmt, HashTable *env) {
             execute(statement, env);
         }
     }
+    
+    return initObject(NIL_OBJECT);
 }
 
-void visitFor(Stmt *stmt, HashTable *env) {
+Object *visitFor(Stmt *stmt, HashTable *env) {
     Expr *range = stmt->as.forStmt.range;
     double end = strcmp(range->as.range.type, "inclusive") == 0 ? range->as.range.end + 1 : range->as.range.end;
     
-    char *name = stmt->as.forStmt.identifier->as.varExp.string;
-    int length = stmt->as.forStmt.identifier->as.varExp.length;
+    char *name = stmt->as.forStmt.identifier->as.identifierExp.string;
+    int length = stmt->as.forStmt.identifier->as.identifierExp.length;
     Object *object = initObject(NUMBER_OBJ);
     Stmt *statement;
     for(int i = range->as.range.start; i < end; i++) {
@@ -108,19 +121,24 @@ void visitFor(Stmt *stmt, HashTable *env) {
             execute(statement, env);
         }
     }
+    
+    return initObject(NIL_OBJECT);
 }
 
-void visitDef(Stmt *stmt, HashTable *env) {
+Object *visitDef(Stmt *stmt, HashTable *env) {
     Object *object = initObject(METHOD_OBJ);
     HashTable *defEnv = initHashTable();
 
-    object->as.method.name = stmt->as.defStmt.name->as.varExp.string;
-    object->as.method.nameLength = stmt->as.defStmt.name->as.varExp.length;
+    object->as.method.name = stmt->as.defStmt.name;
+    object->as.method.nameLength = stmt->as.defStmt.nameLength;
+
     object->as.method.arguments = stmt->as.defStmt.arguments;
     object->as.method.statements = stmt->as.defStmt.statements;
     object->as.method.env = defEnv;
 
     insertEntry(env, object->as.method.name,  object->as.method.nameLength, object);
+    
+    return initObject(NIL_OBJECT);
 }
 
 Object *visitVarAssignment(Expr *exp, HashTable *env) {
@@ -141,8 +159,10 @@ Object *evaluate(Expr *exp, HashTable *env) {
             return visitBoolean(exp);
         case RANGE:
             return visitRange(exp);
-        case VAR_EXP:
-            return visitVarExpression(exp, env);
+        case IDENTIFIER_EXP:
+            return visitIdentifierExpression(exp, env);
+        case METHOD_CALL_EXP:
+            return visitMethodCall(exp, env);
         case VAR_ASSIGNMENT:
             return visitVarAssignment(exp, env);
   }
@@ -175,8 +195,49 @@ Object *visitRange(Expr *exp) {
     return object;
 }
 
-Object *visitVarExpression(Expr *exp, HashTable *env) {
-    return getEntry(exp->as.varExp.string, exp->as.varExp.length, env);
+Object *visitIdentifierExpression(Expr *exp, HashTable *env) {
+//    There's probably some work to do here to handle functions
+    Object *object;
+    object = getEntry(exp->as.identifierExp.string, exp->as.identifierExp.length, env);
+
+    return object;
+}
+
+Object *visitMethodCall(Expr *exp, HashTable *env) {
+    char *methodName = exp->as.methodCall.name;
+    int nameLength = exp->as.methodCall.length;
+
+    Object *methodDefinition = getEntry(methodName, nameLength, env);
+    
+    ExprArray *values = exp->as.methodCall.arguments;
+    ExprArray *arguments = methodDefinition->as.method.arguments;
+    
+    if (arguments->size != values->size) {
+        printf("Arity does not match!");
+        exit(1);
+    }
+
+    HashTable *methodEnv = methodDefinition->as.method.env;
+     
+    for(int i = 0; i < methodDefinition->as.method.arguments->size; i++) {
+        char *name = arguments->list[i]->as.methodCall.name;
+        int length = arguments->list[i]->as.methodCall.length;
+        Object *value = evaluate(values->list[i], env);
+        insertEntry(methodEnv, name, length, value);
+    }
+    
+    StmtArray *statements = methodDefinition->as.method.statements;
+    
+    if (statements->size == 0) {
+        return initObject(NIL_OBJECT);
+    }
+    
+    Object *result;
+    for (int i = 0; i < statements->size; i++) {
+        result = execute(statements->list[i], methodEnv);
+    }
+
+    return result;
 }
 
 Object *visitBinary(Expr *exp, HashTable *env) {

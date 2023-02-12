@@ -11,15 +11,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "hash_table.h"
 
 typedef enum ObjectType {
     NUMBER_OBJ,
     STRING_OBJ,
     BOOLEAN_OBJ,
     RANGE_OBJ,
-    METHOD_OBJ
+    METHOD_OBJ,
+    NIL_OBJECT
 } ObjectType;
+
+// Forward defintion so that we can also required object
+// from the object file.
+struct HashTable;
 
 typedef struct Object {
     ObjectType type;
@@ -50,7 +54,6 @@ typedef struct Object {
             struct StmtArray *statements;
             struct HashTable *env;
         } method;
-
     } as;
 } Object;
 

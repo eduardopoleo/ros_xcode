@@ -6,6 +6,7 @@
 //
 
 #include "hash_table.h"
+#include "object.h"
 
 HashTable *initHashTable(void) {
     HashTable *table = malloc(sizeof(HashTable));

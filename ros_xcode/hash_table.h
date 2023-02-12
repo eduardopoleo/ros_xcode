@@ -12,12 +12,13 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#include "object.h"
+
+struct Object;
 
 typedef struct HashTableEntry {
-    char *key;
     int keyLength;
-    Object *value;
+    char *key;
+    struct Object *value;
     struct HashTableEntry *next;
 } HashTableEntry;
 
@@ -32,12 +33,12 @@ typedef struct HashTable {
 #define HASH_PRIME 499
 
 HashTable *initHashTable(void);
-HashTableEntry *initEntry(char *key, int keyLength, Object *value);
-void insertEntry(HashTable *table, char *key, int keyLength, Object *value);
+HashTableEntry *initEntry(char *key, int keyLength, struct Object *value);
+void insertEntry(HashTable *table, char *key, int keyLength, struct Object *value);
 int hashIndex(char *key, int keyLength, int numBin);
 void resolveEntryCollision(HashTableEntry *firstEntry, HashTableEntry *newEntry);
-void printObject(Object *object);
+void printObject(struct Object *object);
 void printTable(HashTable *table);
-Object *getEntry(char *key, int keyLength, HashTable *table);
+struct Object *getEntry(char *key, int keyLength, HashTable *table);
 
 #endif /* hash_table_h */

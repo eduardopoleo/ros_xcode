@@ -13,12 +13,13 @@
 #include "object.h"
 
 void interpret(StmtArray *array, HashTable *env);
-void execute(Stmt *stmt, HashTable *env);
-void visitPuts(Stmt *stmt, HashTable *env);
-void visitIf(Stmt *stmt, HashTable *env);
-void visitWhile(Stmt *stmt, HashTable *env);
-void visitFor(Stmt *stmt, HashTable *env);
-void visitDef(Stmt *stmt, HashTable *env);
+// Returns a nil objevt for all these statements
+Object *execute(Stmt *stmt, HashTable *env);
+Object *visitPuts(Stmt *stmt, HashTable *env);
+Object *visitIf(Stmt *stmt, HashTable *env);
+Object *visitWhile(Stmt *stmt, HashTable *env);
+Object *visitFor(Stmt *stmt, HashTable *env);
+Object *visitDef(Stmt *stmt, HashTable *env);
 
 Object *visitVarAssignment(Expr *exp, HashTable *env);
 Object *evaluate(Expr *exp, HashTable *env);
@@ -27,6 +28,7 @@ Object *visitNumberLiteral(Expr *exp);
 Object *visitBoolean(Expr *exp);
 Object *visitRange(Expr *exp);
 Object *visitBinary(Expr *exp, HashTable *env);
-Object *visitVarExpression(Expr *exp, HashTable *env);
+Object *visitIdentifierExpression(Expr *exp, HashTable *env);
+Object *visitMethodCall(Expr *exp, HashTable *env);
 
 #endif /* interpreter_h */
